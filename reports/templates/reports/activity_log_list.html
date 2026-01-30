@@ -1,0 +1,77 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Activity Logs{% endblock %}
+
+{% block content %}
+<div class="mb-5 mt-3">
+    <h1 class="display-5 fw-bold text-gradient">Platform <span class="text-primary">Audit Log</span></h1>
+    <p class="text-secondary">Comprehensive history of system synchronization and user-initiated events</p>
+</div>
+
+<div class="glass-panel p-4 animate-fade-in shadow-lg">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Event Time</th>
+                    <th>Actor</th>
+                    <th>Action</th>
+                    <th>Context</th>
+                    <th>Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td><span class="small text-secondary fw-bold text-uppercase">{{ log.timestamp|date:"d M Y"
+                            }}</span><br><span class="small opacity-50">{{ log.timestamp|time }}</span></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-dark rounded-circle p-1 me-2 border border-glass">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                    fill="var(--text-secondary)" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                </svg>
+                            </div>
+                            <span class="fw-bold text-white small">{{ log.actor.username|default:"System" }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span
+                            class="badge {% if log.action == 'CREATE' %}bg-success{% elif log.action == 'UPDATE' %}bg-primary{% elif log.action == 'DELETE' %}bg-danger{% else %}bg-info text-dark{% endif %} px-3 py-2 rounded-pill"
+                            style="font-size: 0.65rem">
+                            {{ log.action }}
+                        </span>
+                    </td>
+                    <td><span class="small text-secondary">{{ log.target_model }}</span></td>
+                    <td><code class="small text-primary opacity-75">{{ log.target_repr }}</code></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-secondary">
+                        No auditable events recorded in the current cycle.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination pagination-sm justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link bg-dark border-glass text-secondary"
+                    href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item disabled"><span class="page-link bg-transparent border-0 text-muted px-4">Page {{
+                    page_obj.number }} of {{ paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link bg-dark border-glass text-secondary"
+                    href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

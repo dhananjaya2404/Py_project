@@ -1,0 +1,179 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Intelligence Reports{% endblock %}
+
+{% block content %}
+<div class="mb-5 mt-3">
+    <h1 class="display-5 fw-bold text-gradient">Intelligence <span class="text-primary">Reports</span></h1>
+    <p class="text-secondary">Cross-initiative data extraction and performance auditing</p>
+</div>
+
+<div class="glass-panel p-4 mb-5 shadow-lg animate-fade-in">
+    <h6 class="text-secondary text-uppercase fw-bold mb-4 small letter-spacing-1">Refine Dataset</h6>
+    <form method="get" class="row g-4">
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Execution Status</label>
+            {{ form.status }}
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Priority Tier</label>
+            {{ form.priority }}
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Assigned Contributor</label>
+            {{ form.assigned_to }}
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">Maturity Limit</label>
+            <div class="d-flex align-items-center">
+                {{ form.date_to }}
+            </div>
+        </div>
+        <div class="col-12 mt-4">
+            <button type="submit" class="btn btn-primary px-4 border-0">Apply Filters</button>
+            <a href="{% url 'report_dashboard' %}" class="btn btn-outline-light px-4 ms-2">Reset</a>
+        </div>
+    </form>
+</div>
+
+<div class="report-container">
+    <div class="table-responsive">
+        <table class="table align-middle" style="border-collapse: separate; border-spacing: 0 15px;">
+            <thead>
+                <tr class="text-secondary small text-uppercase">
+                    <th class="ps-4">Requirement</th>
+                    <th class="text-center">Initiative</th>
+                    <th class="text-center">Owner</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Priority</th>
+                    <th class="pe-4 text-end">Maturity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr class="report-card-row">
+                    <td class="ps-4 py-4">
+                        <div class="fw-bold text-primary fs-4">{{ task.title }}</div>
+                    </td>
+                    <td class="text-center">
+                        <span class="initiative-pill">{{ task.project.name }}</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="fw-bold text-purple fs-5">{{ task.assigned_to.username }}</div>
+                    </td>
+                    <td class="text-center">
+                        {% if task.status == 'DONE' %}
+                        <span class="text-success fw-bold small"><span class="dot bg-success"></span>Done</span>
+                        {% else %}
+                        <span class="text-muted small"><span class="dot bg-secondary"></span>{{ task.get_status_display
+                            }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <span
+                            class="badge rounded-pill {% if task.priority == 'URGENT' %}bg-danger{% elif task.priority == 'HIGH' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} px-3"
+                            style="font-size: 0.7rem">
+                            {{ task.get_priority_display }}
+                        </span>
+                    </td>
+                    <td class="pe-4 text-end">
+                        <span class="text-secondary small fw-bold">{{ task.due_date|date:"M d, Y" }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .report-card-row {
+        background: white !important;
+        border-radius: 12px !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease;
+    }
+
+    .report-card-row:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .report-card-row td {
+        border: none !important;
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+
+    .report-card-row td:first-child {
+        border-radius: 12px 0 0 12px;
+    }
+
+    .report-card-row td:last-child {
+        border-radius: 0 12px 12px 0;
+    }
+
+    .text-primary {
+        color: #00bfff !important;
+    }
+
+    .text-purple {
+        color: #bf40ff !important;
+    }
+
+    .initiative-pill {
+        background: #1e293b;
+        color: white;
+        padding: 0.4rem 1.2rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    .letter-spacing-1 {
+        letter-spacing: 0.1rem;
+    }
+
+    select,
+    input[type="date"] {
+        display: block;
+        width: 100%;
+        padding: 0.8rem 1.25rem;
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: white !important;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    select:focus,
+    input:focus {
+        outline: none;
+        border-color: #38bdf8;
+        background: rgba(15, 23, 42, 0.75);
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    }
+
+    .form-label {
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    option {
+        background: #1e293b;
+        color: white;
+        padding: 10px;
+    }
+</style>
+{% endblock %}

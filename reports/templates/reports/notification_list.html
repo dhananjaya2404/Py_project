@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="mb-5 mt-3">
+    <h1 class="display-5 fw-bold text-gradient">Notification <span class="text-primary">Center</span></h1>
+    <p class="text-secondary">Stay synchronized with real-time updates and team collaborations</p>
+</div>
+
+<div class="glass-panel p-4 animate-fade-in shadow-lg">
+    <div class="list-group list-group-flush bg-transparent">
+        {% for notification in notifications %}
+        <a href="{% if not notification.is_read %}{% url 'mark_notification_read' notification.pk %}{% else %}#{% endif %}"
+            class="list-group-item list-group-item-action bg-transparent border-glass py-4 px-0 animate-fade-in"
+            style="--delay-index: {{ forloop.counter0 }};">
+            <div class="d-flex w-100 justify-content-between align-items-center mb-2">
+                <div class="d-flex align-items-center">
+                    <div class="p-2 rounded-circle me-3 {% if not notification.is_read %}bg-primary{% else %}bg-dark{% endif %}"
+                        style="--bs-bg-opacity: .2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            fill="{% if not notification.is_read %}var(--accent-blue){% else %}var(--text-secondary){% endif %}"
+                            class="bi bi-bell-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+                        </svg>
+                    </div>
+                    <h5
+                        class="mb-0 fw-bold {% if not notification.is_read %}text-white{% else %}text-secondary{% endif %}">
+                        New Update</h5>
+                </div>
+                <small class="text-secondary opacity-75">{{ notification.created_at|timesince }} ago</small>
+            </div>
+            <p class="mb-2 text-white opacity-75 ps-5">{{ notification.message }}</p>
+            <div class="ps-5">
+                {% if not notification.is_read %}
+                <span class="badge bg-primary-subtle text-primary border border-primary px-3 py-1 rounded-pill"
+                    style="font-size: 0.6rem">Unread &bull; Click to Acknowledge</span>
+                {% else %}
+                <span class="badge bg-dark text-secondary border border-glass px-3 py-1 rounded-pill"
+                    style="font-size: 0.6rem">Acknowledged</span>
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <div class="text-center py-5 text-secondary">
+            <div class="mb-3 opacity-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
+                    class="bi bi-inbox-fill" viewBox="0 0 16 16">
+                    <path
+                        d="M4.98 4a.5.5 0 0 0-.49.41l-1.48 8.14a.5.5 0 0 0 .49.59H12.5a.5.5 0 0 0 .49-.59l-1.48-8.14a.5.5 0 0 0-.49-.41zM2.5 13c0 1.105.895 2 2 2h7a2 0 0 0 2-2z" />
+                </svg>
+            </div>
+            <h5>All clear</h5>
+            <p class="small">No new notifications at this moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
