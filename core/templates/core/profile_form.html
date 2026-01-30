@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="main-wrapper d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+    <div class="glass-card p-5 shadow-lg animate-fade-in" style="width: 100%; max-width: 650px;">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-2">Edit <span class="text-primary">Profile</span></h2>
+            <p class="text-secondary small">Update your personal information and preferences</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3 mb-4">
+                {% for field in form %}
+                <div class="{% if field.name == 'department' %}col-12{% else %}col-md-6{% endif %}">
+                    <label class="form-label small text-uppercase fw-bold text-secondary">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex gap-3 pt-3">
+                <button type="submit" class="btn btn-primary px-5 py-2 fw-bold flex-grow-1 shadow-sm">Save
+                    Changes</button>
+                <a href="javascript:history.back()" class="btn btn-outline-light px-4 py-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select,
+    textarea {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #38bdf8;
+        background: rgba(15, 23, 42, 0.6);
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block content %}
+<div class="mb-5 mt-3">
+    <h1 class="display-5 fw-bold text-gradient">My Assigned <span class="text-primary">Tasks</span></h1>
+    <p class="text-secondary">Track your personal contributions and synchronize your progress</p>
+</div>
+
+<div class="glass-panel p-4 animate-fade-in shadow-lg">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Contribution</th>
+                    <th>Project</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th class="text-end">Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr class="animate-fade-in" style="--delay-index: {{ forloop.counter0 }};">
+                    <td>
+                        <div class="fw-bold text-white">{{ task.title }}</div>
+                        <div class="small text-secondary">Deadline: {{ task.due_date }}</div>
+                    </td>
+                    <td>
+                        <span class="small badge bg-dark text-secondary border border-glass">{{ task.project.name
+                            }}</span>
+                    </td>
+                    <td>
+                        <span
+                            class="badge rounded-pill {% if task.priority == 'URGENT' %}bg-danger{% elif task.priority == 'HIGH' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} px-3">
+                            {{ task.get_priority_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <span
+                            class="small fw-bold {% if task.status == 'DONE' %}text-success{% else %}text-muted{% endif %}">
+                            {{ task.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'task_status_update' task.pk %}"
+                            class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm">
+                            Update Progress
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-secondary">
+                        No individual tasks assigned to your queue.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-5 mt-3">
+    <h1 class="display-5 fw-bold text-gradient">Projects</h1>
+    {% if user.role == 'ADMIN' or user.role == 'MANAGER' %}
+    <a href="{% url 'project_create' %}" class="btn btn-primary d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+            class="bi bi-plus-circle-fill me-2" viewBox="0 0 16 16">
+            <path
+                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+        </svg>New Project
+    </a>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% for project in projects %}
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card h-100 p-4 animate-fade-in" style="--delay-index: {{ forloop.counter }};">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h4 class="fw-bold mb-0 text-white">{{ project.name }}</h4>
+                <span
+                    class="badge rounded-pill {% if project.status == 'COMPLETED' %}bg-success{% elif project.status == 'ACTIVE' %}bg-primary{% else %}bg-secondary{% endif %} px-3 py-2"
+                    style="font-size: 0.7rem">
+                    {{ project.get_status_display }}
+                </span>
+            </div>
+            <p class="text-secondary small mb-4"
+                style="height: 3rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;">
+                {{ project.description }}
+            </p>
+            <div class="d-flex align-items-center mb-4 text-muted small">
+                <div class="bg-primary rounded-circle p-1 me-2" style="--bs-bg-opacity: .2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="var(--accent-blue)"
+                        class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                    </svg>
+                </div>
+                <span>{{ project.manager.username }}</span>
+            </div>
+            <div class="d-flex gap-2 pt-3 border-top border-glass">
+                <a href="{% url 'project_detail' project.pk %}"
+                    class="btn btn-outline-light btn-sm flex-grow-1 rounded-pill">View Detail</a>
+                {% if user.role == 'ADMIN' or user.role == 'MANAGER' %}
+                <a href="{% url 'project_update' project.pk %}"
+                    class="btn btn-secondary btn-sm rounded-circle p-2 shadow-sm" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="glass-card p-5 text-center">
+            <h5 class="text-secondary">No projects discovered yet.</h5>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

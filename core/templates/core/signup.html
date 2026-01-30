@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Signup - Employee Platform{% endblock %}
+
+{% block content %}
+<div class="main-wrapper d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+    <div class="glass-card p-5 shadow-lg animate-fade-in" style="width: 100%; max-width: 550px;">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-2">Join the Platform</h2>
+            <p class="text-secondary small">Start managing your team's vision today</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label small text-uppercase fw-bold text-secondary">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold mt-4 shadow-sm">Initialize Account</button>
+        </form>
+        <div class="text-center mt-5">
+            <span class="text-muted small">Already part of the team?</span>
+            <a href="{% url 'login' %}" class="text-primary small fw-bold text-decoration-none ms-2">Sign In</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select,
+    textarea {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #38bdf8;
+        background: rgba(15, 23, 42, 0.6);
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+
+    option {
+        background: var(--bg-deep);
+        color: white;
+    }
+</style>
+{% endblock %}
